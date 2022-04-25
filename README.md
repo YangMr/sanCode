@@ -29,9 +29,145 @@
 
 ## 三、封装http请求以及封装API
 
+1. 创建config.js文件, 配置请求的公共接口地址
 
+   ```javascript
+   const config = {
+     baseURL : 'https://admin.hxwendeng.com/api/app'
+   }
+   export {config}
+   ```
 
+2. 在utils文件夹内创建request.js文件,封装wx.requestfang方法
 
+   ```javascript
+   import {config} from "../config/config"
+   
+   const tips = {
+     1 : "发生未知错误", 
+     10005 : "未输入用户名和密码",
+     10006 : "用户未登录",
+     10007 : "token不能为空"
+   }
+   
+   
+   class Http{
+     request({url, method = "GET", data = {}}){
+       return new Promise((resolve,reject)=>{
+         this._request({url, resolve, reject, method, data})
+       })
+     }
+   
+     _request({url,resolve, reject, method = "GET", data = {}}){
+       wx.request({
+         url: config.baseURL + url,
+         method,
+         data,
+         success : (response)=>{
+   
+           const code = response.statusCode.toString()
+   
+           if(code.startsWith("2")){
+             resolve(response.data)
+           }
+   
+           reject()
+         
+           const error_code = response.data.error_code
+           this._show_error(error_code)
+         },
+         fail(error){
+           reject(error)
+           this._show_error(1)
+         }
+       })
+     }
+   
+     _show_error(error_code){
+       if(!error_code){
+         error_code = 1
+       }
+   
+       const tip = tips[error_code]
+       
+       wx.showToast({
+         title: tip ? tip : tips[1],
+         icon : "none",
+         duration : 2000
+       })
+     }
+   }
+   
+   
+   export default Http
+   ```
+
+3. 在model文件夹内创建index.js文件,封装api接口
+
+   ```javascript
+   import Http from "../utils/request"
+   
+   class IndexModel extends Http{
+     getNav(){
+       return this.request({url : "/nav", method : "GET"})
+     }
+     
+     getBanner(){
+       return this.request({url : "/banner", method : "GET"})
+     }
+   
+     getCourse(){
+       return this.request({url : "/recommend/appIndex", method : "GET"})
+     }
+   }
+   
+   
+   
+   export default IndexModel
+   ```
+
+4. 在页面调用api接口, 以下为调用示例
+
+   ```javascript
+   // index.js
+   import IndexModel from "../../model/index"
+   const indexModel = new IndexModel()
+   Page({
+   
+     /**
+      * 页面的初始数据
+      */
+     data: {
+       
+     },
+   
+     /**
+      * 生命周期函数--监听页面加载
+      */
+     onLoad: function (options) {
+       this.handleGetNav()
+       this.handleGetBanner()
+       this.handleGetCourse()
+     },
+   
+   
+     async handleGetNav(){
+       const res = await indexModel.getNav()
+       console.log(res)
+     },
+   
+     async handleGetBanner(){
+       const res = await indexModel.getBanner()
+       console.log(res)
+     },
+   
+     async handleGetCourse(){
+       const res = await indexModel.getCourse()
+       console.log(res)
+     }
+   })
+   
+   ```
 
 ## 四、封装一些公共方法
 
