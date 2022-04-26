@@ -9,31 +9,38 @@ const tips = {
 
 
 class Http{
-  request({url, method = "GET", data = {}}){
+  request({url, method = "GET", data = {}, name = "api1" , header = {}}){
     return new Promise((resolve,reject)=>{
-      this._request({url, resolve, reject, method, data})
+      this._request({url, resolve, reject, method, data, header, name})
     })
   }
 
-  _request({url,resolve, reject, method = "GET", data = {}}){
+  _request({url,resolve, reject,method = "GET", data = {},header ={}, name = "api1"}){
+
+    wx.showLoading()
+
     wx.request({
-      url: config.baseURL + url,
+      url: config[name].baseURL + url,
       method,
       data,
+      header,
       success : (response)=>{
 
         const code = response.statusCode.toString()
 
         if(code.startsWith("2")){
+          wx.hideLoading()
           resolve(response.data)
+          return
         }
 
         reject()
-      
+        wx.hideLoading()
         const error_code = response.data.error_code
         this._show_error(error_code)
       },
       fail(error){
+        wx.hideLoading()
         reject(error)
         this._show_error(1)
       }

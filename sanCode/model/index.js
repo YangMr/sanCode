@@ -1,16 +1,12 @@
 import Http from "../utils/request"
 
 class IndexModel extends Http{
-  getNav(){
-    return this.request({url : "/nav", method : "GET"})
-  }
-  
   getBanner(){
-    return this.request({url : "/banner", method : "GET"})
+    return this.request({url : "/banner?", method : "GET", header : {devicetype: "H5"}})
   }
 
-  getCourse(){
-    return this.request({url : "/recommend/appIndex", method : "GET"})
+  getProduct(data){
+    return this.request({url : "/api/getProduct", method: "GET" , data, name : "api2"})
   }
 }
 

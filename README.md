@@ -175,13 +175,189 @@
 
 ## 五、创建TabBar以及TabBar对应的页面
 
+![image-20220426085322153](README.assets/image-20220426085322153.png)
+
+**tabBar**
+
+```json
+{
+    "pages": [
+        "pages/shopping/shopping",
+        "pages/product/product",
+        "pages/personal/personal"
+    ],
+    "window": {
+        "backgroundTextStyle": "light",
+        "navigationBarBackgroundColor": "#fff",
+        "navigationBarTitleText": "Weixin",
+        "navigationBarTextStyle": "black"
+    },
+    "tabBar": {
+        "selectedColor": "#f60",
+        "backgroundColor": "#fff",
+        "list": [
+            {
+                "pagePath": "pages/shopping/shopping",
+                "text": "扫码购物",
+                "iconPath": "/assets/images/index02.png",
+                "selectedIconPath": "/assets/images/index01.png"
+            },
+            {
+                "pagePath": "pages/product/product",
+                "text": "每日优选",
+                "iconPath": "/assets/images/product02.png",
+                "selectedIconPath": "/assets/images/product01.png"
+            },
+            {
+                "pagePath": "pages/personal/personal",
+                "text": "个人中心",
+                "iconPath": "/assets/images/user02.png",
+                "selectedIconPath": "/assets/images/user01.png"
+            }
+        ]
+    },
+    "style": "v2",
+    "sitemapLocation": "sitemap.json"
+}
+```
+
 
 
 ## 六、扫码购物页面开发
 
 ### 6.1 实现页面布局
 
+![image-20220426100411088](README.assets/image-20220426100411088.png)
+
+`Shopping.wxml`
+
+```html
+<view class="shopping">
+  <t-swiper swiperList="{{swiperList}}"></t-swiper>
+  <view class="scancode">
+    <view class="button">
+      <image src="../../assets/images/qrcode.png"></image>
+      <text>请扫描商品条形码</text>
+    </view>  
+  </view>
+</view>
+
+```
+
+`Shopping.wxss`
+
+```css
+/* pages/shopping/shopping.wxss */
+.shopping{
+  height : 100%;
+  display: flex;
+  flex-direction: column;
+}
+.scancode{
+  flex : 1;
+  display: flex;
+  justify-content: center;
+  padding-top:100rpx;
+  box-sizing: border-box;
+}
+.button{
+  width: 280rpx;
+  height: 280rpx;
+  border-radius: 50%;
+  background-color: #FEB81C;
+  border : 10px solid #FFE8B6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+.button image{
+  width: 168rpx;
+  height: 143rpx;
+}
+.button text{
+  display: block;
+  width: 163rpx;
+  color : #fff;
+  text-align: center;
+  margin-top: 5rpx;
+}
+```
+
+`Shopping.js`
+
+```javascript
+// pages/shopping/shopping.js
+import IndexModel from "../../model/index"
+const indexModel = new IndexModel()
+Page({
+
+  async getBanner(){
+    const response = await indexModel.getBanner()
+    console.log(response)
+    this.setData({
+      swiperList : response.data
+    })
+  },
+
+  /**
+   * 页面的初始数据
+   */
+  data: {
+    swiperList : []
+  },
+
+  /**
+   * 生命周期函数--监听页面加载
+   */
+  onLoad: async function (options) {
+    this.getBanner()
+  }
+})
+```
+
+`Shopping.json`
+
+```json
+{
+  "usingComponents": {
+    "t-swiper" : "/components/swiper/swiper"
+  }
+}
+```
+
+`swiper.wxml`
+
+```html
+<view class="swipper">
+    <swiper indicator-dots autoplay circular>
+      <swiper-item wx:for="{{swiperList}}" wx:key="index">
+        <image  src="{{item.banner_img}}"></image>
+      </swiper-item>
+    </swiper>
+  </view>
+```
+
+`swiper.wxss`
+
+```css
+/* components/swiper/swiper.wxss */
+.swipper, swiper, image{
+  width: 100%;
+  height : 320rpx;
+}
+```
+
+
+
 ### 6.2 点击扫码调用扫码相机
+
+**实现思路:**
+
+1. 给按钮绑定点击事件
+2. 调用扫码相机
+3. 扫描商品
+4. 获取条形码
 
 ### 6.3 扫码成功之后获取到商品条形码
 

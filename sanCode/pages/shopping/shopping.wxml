@@ -1,0 +1,9 @@
+<view class="shopping">
+  <t-swiper swiperList="{{swiperList}}"></t-swiper>
+  <view class="scancode">
+    <view class="button" bindtap="handleSacnCode">
+      <image src="../../assets/images/qrcode.png"></image>
+      <text>请扫描商品条形码</text>
+    </view>  
+  </view>
+</view>
