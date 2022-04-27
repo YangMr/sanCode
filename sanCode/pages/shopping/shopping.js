@@ -1,7 +1,18 @@
 // pages/shopping/shopping.js
 import IndexModel from "../../model/index"
 const indexModel = new IndexModel()
+import {Cart} from  "../../utils/cart"
+const cart = new Cart()
 Page({
+
+  async handleSacnCode(){
+    await cart.addCart()
+    wx.navigateTo({
+      url: '/pages/cart/cart',
+    })
+  },
+
+  /*
   handleSacnCode(){
     wx.scanCode({
       onlyFromCamera: false,
@@ -15,7 +26,9 @@ Page({
       }
     })
   },
+  */
 
+  /*
   addCart(data){
     const carts = wx.getStorageSync('carts') || ""
     if(carts){
@@ -37,13 +50,13 @@ Page({
       wx.setStorageSync('carts', data)
     }
   },
+  */
 
+  /*
   hasData(data,carts){
-    // 检测给本地存储的商品数据 是否在 本地已存在 
-    // 已存在 num + 1
-    // 不存在 num = 1, 然后存在本地
     return carts.some((item)=>item._id === data._id)
   },
+  */
 
   async getBanner(){
     const response = await indexModel.getBanner()

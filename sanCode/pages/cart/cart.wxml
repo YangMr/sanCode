@@ -1,2 +1,41 @@
-<!--pages/cart/cart.wxml-->
-<text>我是购物车页面</text>
+<view wx:if="{{cartList && cartList.length > 0}}" class="cart">
+  <view class="cart-list">
+
+    <view class="list-item" wx:for="{{cartList}}" wx:key="index">
+      <view class="title">{{item.title}}</view>
+      <view class="price">¥ {{item.price}}</view>
+      <view class="computed-button">
+        <view class="circle decrement" data-index="{{index}}" bindtap="handleDecrement">-</view>
+        <input class="count" type="text" value="{{item.num}}"/>
+        <view class="circle increment" data-index="{{index}}" bindtap="handleIncrement">+</view>
+      </view>
+    </view>
+
+
+    
+  </view>
+  <view class="cart-button">
+    <view class="total-price">
+      总计: <text>¥ {{totalPrice}}</text> 
+    </view>
+    <view class="button-group">
+      <view class="button add-cart" bindtap="handleSacnCode">
+        继续添加
+      </view>
+      <view class="button to-order" bindtap="handleToOrder">
+        去结算({{productCount}})
+      </view>
+    </view>
+  </view>
+</view>
+<view wx:else class="not-cart">
+  <view class="info">
+    购物车是空的哦
+  </view>
+  <view class="pic">
+    <image src="../../assets/images/cart.png"></image>
+  </view>
+  <view class="scan-code" bindtap="handleSacnCode">
+    扫一扫
+  </view>
+</view>

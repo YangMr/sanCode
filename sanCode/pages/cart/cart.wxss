@@ -1,1 +1,119 @@
 /* pages/cart/cart.wxss */
+.cart{
+  height : 100%;
+  display: flex;
+  flex-direction: column;
+}
+.cart-list{
+  flex : 1;
+}
+.list-item{
+  padding : 20rpx;
+  background-color:  #fff;
+  border-bottom:1px solid #eee;
+}
+.title{
+  color : #3c3c3c;
+  font-size : 26rpx;
+}
+.price{
+  font-size : 26rpx;
+  color : #f60;
+  margin-top: 10rpx;
+}
+.computed-button{
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+.circle{
+  width: 50rpx;
+  height: 50rpx;
+  border:1rpx solid #FEB81C;
+  text-align: center;
+  line-height: 50rpx;
+  border-radius: 50%;
+  
+}
+.decrement{
+  color : #FEB81C;
+}
+.increment{
+  color : #fff;
+  background-color: #FEB81C; 
+}
+.count{
+  width: 120rpx;
+  border:1rpx solid  #FEB81C;
+  height : 50rpx;
+  border-radius: 30rpx;
+  margin: 0 8rpx;
+  text-align: center;
+  font-size:24rpx;
+}
+.cart-button{
+  height : 160rpx;
+  position: fixed;
+  bottom : 0;
+  width: 100%;
+  border : 1rpx solid #eee;
+}
+.total-price{
+  height: 70rpx;
+  background-color:#fff;
+  line-height: 70rpx;
+  font-size : 28rpx;
+  padding :0 20rpx;
+  color : #ccc;
+}
+.total-price text{
+  color : #f60;
+}
+.button-group{
+  height : 90rpx;
+  display: flex;
+}
+.button-group .button{
+  flex : 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.add-cart{
+  color : #fff;
+  background-color: #FEB81C;
+}
+.to-order{
+  background-color:  #f60;
+  color : #fff;
+}
+
+.not-cart{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.info{
+  margin-top:300rpx;
+  color : #3c3c3c;
+  font-size : 26rpx;
+}
+.pic{
+  width: 200rpx;
+  height: 200rpx;
+  margin: 40rpx 0;
+}
+.pic image{
+  width: 100%;
+  height: 100%;
+}
+.scan-code{
+  width: 300rpx;
+  background-color:  #FEB81C;
+  color : #fff;
+  border-radius: 20rpx;
+  padding : 10rpx 0;
+  text-align: center;
+  font-size: 26rpx;
+}
