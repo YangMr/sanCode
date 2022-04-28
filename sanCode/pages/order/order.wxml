@@ -1,2 +1,53 @@
-<!--pages/order/order.wxml-->
-<text>pages/order/order.wxml</text>
+<view class="order">
+  <view class="container">
+    <view class="product">
+      <view class="list" wx:for="{{cartList}}" wx:key="index">
+        <view class="list-item">
+          <view class="title">
+            <text>{{item.title}}</text>
+            <text>¥{{item.price}}</text>
+          </view>
+          <view class="count">
+            x{{item.num}}
+          </view>
+        </view>
+      </view>
+      <view class="toggle" bindtap="handleToggle">
+        共{{carts.length}}件商品 {{status ? show : hide}}  
+      </view>
+    </view>
+
+    <view class="balance">
+      <view>
+        余额 <text>(¥{{balancePrice}})</text>
+      </view>
+      <switch color="#FEB81C" checked bindchange="handleSwitchStatus"></switch>
+    </view>
+
+    <view class="money">
+      <text>商品金额</text>
+      <text>¥{{custormPrice}}</text>
+    </view>
+
+
+
+    <view class="preferential">
+      <text>余额减扣</text>
+      <text>-¥{{switchStatus ? (balancePrice <= custormPrice ? balancePrice : custormPrice) : 0 }}</text>
+    </view>
+
+    <view class="tips">
+      请支付完成后携带商品
+    </view>
+
+
+  </view>
+  <view class="footer">
+    <view class="pay-price">
+      实际支付: <text>¥{{totalPrice}}</text>
+    </view>
+    <view class="pay-confirm" bindtap="handlePay">
+      确认支付
+    </view>
+  </view>
+</view>

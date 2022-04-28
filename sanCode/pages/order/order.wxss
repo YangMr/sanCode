@@ -1,1 +1,89 @@
 /* pages/order/order.wxss */
+.order{
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height : 100%;
+}
+.container{
+  flex : 1;
+  padding-bottom : 90rpx;
+}
+.product{
+  padding :20rpx 20rpx 0 20rpx;
+  background-color: #fff;
+}
+.list{
+  padding : 20rpx 0 20rpx 0;
+  border-bottom:1px solid #eee;
+}
+.list-item{
+  font-size : 26rpx;
+} 
+.title{
+  display: flex;
+  color : #3d3d3d;
+  justify-content: space-between;
+}
+.title text:nth-child(2){
+  color : #f60;
+}
+.count{
+  margin-top: 40rpx;
+  text-align: right;
+}
+.toggle{
+  text-align: center;
+  color : #3d3d3d;
+  font-size : 26rpx;
+  padding : 30rpx 0;
+}
+.footer{
+  height : 90rpx;
+  background-color: #fff;
+  /* border:1rpx solid #eee; */
+  display: flex;
+  line-height: 90rpx;
+  font-size : 26rpx;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+}
+.pay-price{
+  flex : 2;
+  padding-left : 10rpx;
+  color : #3d3d3d;
+}
+.pay-price text{
+  color : #f60;
+}
+.pay-confirm{
+  flex : 1;
+  text-align: center;
+  color : #fff;
+  background-color: #FEB81C;
+}
+
+
+.balance, .money, .preferential{
+  background-color: #fff;
+  margin-top:20rpx;
+  padding: 30rpx 20rpx;
+  font-size : 28rpx;
+  color : #3d3d3d;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.money text:last-child, .preferential text:last-child{
+  color : #f60;
+}
+
+.tips{
+  height : 300rpx;
+  line-height: 300rpx;
+  text-align: center;
+  /* margin-top: 150rpx; */
+  font-size : 28rpx;
+  color : #3d3d3d;
+}
