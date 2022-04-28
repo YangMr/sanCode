@@ -1,0 +1,24 @@
+<view class="success">
+  <view class="wrap">
+    <view class="icon">
+      <image src="../../assets/images/face.png"></image>
+      <text>支付成功</text>
+    </view>
+    <view class="back" bindtap="handleBack">
+      返回首页
+    </view>
+  </view>
+  <view class="like">
+    <view class="title">
+      <text>*</text>你可能喜欢<text>*</text>
+    </view>
+    <view class="product">
+      <image></image>
+      <view>海南现摘芒果</view>
+      <view>¥29.9</view>
+      <view>
+        
+      </view>
+    </view>
+  </view>
+</view>

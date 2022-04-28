@@ -1,0 +1,53 @@
+/* pages/success/success.wxss */
+.success{
+  height : 100%;
+  display: flex;
+  flex-direction: column;
+}
+.wrap{
+  display: flex;
+  height : 400rpx;
+  flex-direction: column;
+  align-items: center;
+}
+.icon{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 100rpx;
+}
+.icon image{
+  width: 80rpx;
+  height: 80rpx;
+}
+.icon text{
+  font-size : 26rpx;
+  color : #3d3d3d;
+  margin-top: 5rpx;
+}
+.back{
+  font-size : 26rpx;
+  color : #fff;
+  background-color: #FEB81C;
+  padding : 20rpx 40rpx;
+  border-radius: 10rpx;
+  margin-top: 80rpx;
+}
+.like{
+  flex : 1;
+  background-color: #fff;
+  padding : 0 20rpx;
+}
+.title{
+  border-bottom : 1px solid #ccc;
+  padding : 20rpx 0;
+  text-align: center;
+  color : #3d3d3d;
+}
+.title text{
+  color : #f60;
+  padding : 0 20rpx;
+  font-size : 24rpx;
+  position: relative;
+  top : -10rpx;
+}

@@ -404,6 +404,183 @@ Page({
 9. 支付成功的处理
 10. 支付失败的处理
 
+
+
+微信小程序支付:
+        1. 当小程序启动的时候,调用wx.login获取小程序的code码
+        2. 获取到小程序的code码之后,调用获取openid接口,获取到openid
+        3. 将获取到的openid以及其他信息保存到本地
+        4. 当点击确认支付按钮时调用统一下单接口,将对应的参数发送给后台,其中有一个签名非常重要,使用的md5进行的加密
+        5. 当统一下单接口调用成功之后,后台会给我们返回支付所需要的相关信息
+        6. 获取到支付相关的信息之后,调用封装的微信支付方法,拉起支付,把对应支付信息传进去就能够完成支付功能
+
+        注意:加密以这块我们根据后台的要求,只加密了openid uid 以及salt等属性以及属性值,用的是md5
+杨岭
+7月12日 16:00
+微信小程序的支付功能:
+    
+    支付的准备工作:
+    
+      注册小程序的账号 (不能是个人号,个人号无法认证,并且无法开通微信支付)
+    
+      进行小程序的认证 (300/年)
+    
+      开通微信支付  (填写支付所需要的相关信息)
+
+
+    前端业务:
+      1. 在小程序启动的时候,调用wx.login方法获取凭证(凭证也就是code码)
+      2. 调用获取openid接口,通过传递code码获取后台给返回的openid以及相关信息
+      3. 将openid和相关信息保存到本地
+      4. 当点击确认支付按钮的时候,调用统一下单接口
+        4.1 获取保存到本地的openid以及相关信息
+        4.2 获取购物车的数据,并且将获取到的购物车的数据,转化为字符串(使用JSON.stringify()方法)
+        4.3 实现签名
+          4.3.1 和后端确定加密的方式(md5)以及所要加密的字段 
+          4.3.2 创建一个sign方法,在这个方法里面接收我们要加密的字段
+            - 在sign方法里面,创建一个数组
+            - 使用for in语句遍历加密的字段
+            - 将遍历的字段添加数组里面
+            - 对数组使用sort方式进行排序
+            - 初始化str变量,用来保存加密的字段属性和字段值的拼接
+            - 在使用for语句遍历保存加密字段属性的数组
+            - 引入md5模块
+            - 使用md5进行加密
+            - 将加密之后的内容return 返回sign这个方法
+        4.4 将统一下单接口所需要参数一一进行传递
+      5. 当统一下单接口调用成功之后,能够获取到支付所需要的相关信息
+      6. 调用小程序内置的支付api,将支付api所需要的参数进行传递,如果正确的话,则拉起支付
+      7. 进行支付
+      8.支付成功之后,清除购物车的数据,并且跳转到支付成功的页面    
+    
+      代码: 
+        代码一共分为2部分:
+          获取code码以及openid的相关信息:
+    
+          -------------------------------------------------------------------------------
+            //1. 调用wx.login方法,获取code码
+            wx.login({
+              success : async (res)=>{
+                //2. 获取code码
+                const code = res.code;
+                //3. 调用获取openid的接口
+                const result = await payApi.getOpenId(code);
+                //4. 判断 如果成功 则标openid及其他相关的信息保存到畚斗, 失败 则进行一个错误提示
+                if(result.data.success){
+                  const userinfo = result.data.userinfo;
+                  wx.setStorageSync('userinfo', userinfo)
+                }else{
+                  wx.showToast({
+                    title: '获取openId失败',
+                  })
+                }
+              },
+              fail : ()=>{
+                wx.showToast({
+                  title: '调用wx.login方法失败',
+                })
+              }
+            })
+          }
+        ---------------------------------------------------------------------------------
+
+
+​         
+        点击确认支付按钮要执行的代码:
+           /*支付方法*/
+            async doPay() {
+              //显示加载中
+              wx.showLoading();
+    
+              //获取商品的所用数据
+              const carts = wx.getStorageSync('carts');
+              // console.log(carts)
+    
+              //获取本地存储的openid的相关信息
+              const userinfo = wx.getStorageSync('userinfo');
+              // console.log(userinfo)
+    
+              //调用签名方法
+              const signData = sign({
+                openid: userinfo.openid,
+                salt: userinfo.salt,
+                uid: userinfo._id
+              });
+
+
+
+              //调用统一下单接口
+              const result = await payApi.unifiedOrder({
+                openid: userinfo.openid,
+                uid: userinfo._id,
+                sign: signData,
+                total_price: this.data.allPrice,
+                total_num: this.data.allNum,
+                derate_price: 0,
+                real_price: this.data.allPrice,
+                order: JSON.stringify(carts)
+              })
+    
+              //做一个错误的处理
+              if (result.data.success) {
+                console.log(result.data.result)
+                const data = JSON.parse(result.data.result);
+                this.wxPay(data)
+                wx.hideLoading();
+              } else {
+                wx.hideLoading();
+                wx.showToast({
+                  title: '统一下单失败',
+                })
+              }
+    
+            },
+    
+            /*拉起支付的方法*/
+            wxPay(data) {
+              console.log(data)
+              wx.requestPayment({
+                timeStamp: data.timeStamp,
+                nonceStr: data.nonceStr,
+                package: data.package,
+                signType: 'MD5',
+                paySign: data.paySign,
+                success(res) {
+                  console.log(res)
+                },
+                fail(res) {}
+              })
+            }
+
+
+​           
+        签名加密的代码:
+        function sign(userinfo){
+          const arr = [];
+          for(var i in userinfo){
+            arr.push(i)
+          };
+          arr.sort();
+          
+          let str = "";
+          for(var i=0;i<arr.length;i++){
+            str += arr[i] + userinfo[arr[i]];
+          }
+        
+          console.log(md5(str));
+          return md5(str);
+        
+        }
+
+
+    后端业务: 
+    
+      后端去写的,如果咱们公司需要写的话,我这边也可以解决,虽然没有写过,但是这个问题我能给解决
+    
+      (闲鱼 或者 淘宝) ,在上面找人接单,专门给你解决问题, 收费(不建议)
+
+*/
+
 ## 九、支付成功页面开发
 
 

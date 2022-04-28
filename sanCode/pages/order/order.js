@@ -1,6 +1,7 @@
 // pages/order/order.js
 import PayModel from "../../model/pay"
 const payModel = new PayModel()
+import md5 from "../../utils/md5"
 Page({
 
   handlePay(){
@@ -9,37 +10,54 @@ Page({
 
   async handleOrder(){
     const userinfo = wx.getStorageSync('userinfo')
+    // uid openid salt
+    const sign = this.sign({
+      uid : userinfo._id,
+      openid : userinfo.openid,
+      salt : userinfo.salt
+    })
+
     const data = {
       openid : userinfo.openid,
       uid : userinfo._id,
-      // sign : "",
+      sign : sign,
       total_price : this.data.custormPrice,
       total_num : this.data.totalNum,
       derate_price : this.data.balancePrice,
-      read_price : this.data.totalPrice,
-      order : this.data.carts
+      real_price : this.data.totalPrice,
+      order : JSON.stringify(this.data.carts)
     }
 
     const response = await payModel.order(data)
-
-    this.handlePayMement(response)
+    this.handlePayMement(response.result)
     // 加入刚才接口调用成功了, 后台会返回支付需要的参数, 这个时候需要发起支付
   },
 
   handlePayMement(data){
+    data = JSON.parse(data)
+    console.log(data)
     wx.requestPayment({
-      nonceStr: data.nonceStr,,
-      package: data.package,
-      paySign: data.paySign,
       timeStamp: data.timeStamp,
+      nonceStr: data.nonceStr,
+      package: data.package,
+      signType : "MD5",
+      paySign: data.paySign,
       success : response=>{
+        console.log("response=>",response)
+        if(response.errMsg === 'requestPayment:ok'){
 
+          wx.removeStorageSync('carts')
+
+          wx.navigateTo({
+            url: '/pages/success/success',
+          })
+        }
       },
       fail : error=>{
-
+        console.log(error)
       }
     })
-  }
+  },
 
   handleSwitchStatus(event){
     this.setData({
@@ -60,6 +78,7 @@ Page({
       cartList
     })
   },
+
 
 
   getTotalPrice(){
@@ -119,6 +138,25 @@ Page({
       carts,
       newCarts 
     }) 
+  },
+
+  sign(json){
+
+    const arr = [] // uid openid salt
+
+    for(let key in json){
+      arr.push(key)
+    }
+
+    arr.sort()
+
+    let str = ""
+
+    for(let i=0;i<arr.length;i++){
+      str += arr[i] + json[arr[i]]
+    }
+
+    return md5(str)
   },
 
   /**
